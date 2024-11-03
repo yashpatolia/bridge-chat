@@ -8,6 +8,7 @@ from discord.ext import commands
 from javascript import On
 from config import OPTIONS, BRIDGE_CHANNEL, BRIDGE_CHANNEL_ID, OFFICER_CHANNEL, OFFICER_CHANNEL_ID
 from bridge_commands.bridge_commands import bridge_commands
+from game.roll_dye import roll_dye
 
 
 class Bridge(commands.Cog):
@@ -44,6 +45,8 @@ class Bridge(commands.Cog):
                     if message.split(' ')[0][0] == ".":  # Bot Commands
                         text = bridge_commands(message, username, guild_rank, self.client.bot)
                         bridge_webhook.send(text)
+                    else:
+                        roll_dye(username, self.client.bot)
 
                     embed.set_author(name=f"{username}", icon_url=f"https://mc-heads.net/avatar/{username}")
                     embed.description = message

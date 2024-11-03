@@ -1,37 +1,32 @@
 import random
 import logging
-import json
-from commands.game.get_uuid import get_uuid
+import sqlite3
+import discord
+from utils.get_uuid import get_uuid
+from config import DYE_DROPS_CHANNEL
 
 
-def roll_rng(username, bot):
-    text = ""
-    with open('drops.json', 'r') as file:
-        drops = json.load(file)
-
-    with open('data.json', 'r') as file:
-        data = json.load(file)
-
-    with open('users.json', 'r') as file:
-        users = json.load(file)
-
+def roll_dye(username, bot):
     uuid = get_uuid(username)
+    dye_webhook = discord.SyncWebhook.from_url(DYE_DROPS_CHANNEL)
 
-    if uuid in data['users'].keys():
-        loot = random.choices(list(drops.keys()), weights=list(drops.values()), k=1)[0]
-        logging.warning(f"{username} rolled {loot}!")
+    with sqlite3.connect("temporals.db") as connection:
+        cursor = connection.cursor()
+        connection.execute("PRAGMA foreign_keys = ON;")
+        cursor.execute("SELECT dye_id, weight FROM dyes")
+        results = cursor.fetchall()
 
-        if loot != "Nothing":
-            if loot in list(data['users'][uuid]['inventory'].keys()):
-                amount = data['users'][uuid]['inventory'][loot]
-                data['users'][uuid]['inventory'][loot] = amount + 1
-            else:
-                data['users'][uuid]['inventory'][loot] = 1
+        dye_ids, weights = zip(*results)
+        loot_id = random.choices(list(dye_ids), weights=list(weights), k=1)[0]
+        loot_id = 'bone_dye'
+        if loot_id != "nothing":
+            cursor.execute("SELECT dye_name FROM dyes WHERE dye_id = ?", (loot_id,))
+            dye_name, hex_color = cursor.fetchone()
+            cursor.execute("UPDATE users_dyes SET received = TRUE WHERE dye_id = ?", (loot_id,))
 
-            with open('data.json', 'w') as file:
-                file.write(json.dumps(data, indent=4))
-
-            bot.chat(f'/gc {username}: Found {loot}!')
-            text = f"{username}: Found {loot}!"
-
-    return text
+            logging.warning(f"{username} rolled {dye_name}!")
+            bot.chat(f'/gc {username}: Found {dye_name}!')
+            embed = discord.Embed(color=discord.Color.from_str(hex_color), title=username,
+                                  description=f"Dropped **{dye_name}**!")
+            dye_webhook.send(embed=embed)
+        connection.commit()
