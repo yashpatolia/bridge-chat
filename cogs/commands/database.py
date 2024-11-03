@@ -21,12 +21,13 @@ class Database(commands.Cog):
         cursor = connection.cursor()
         try:
             cursor.execute(f'''{command}''')
+            results = cursor.fetchall()
             connection.commit()
             connection.close()
             embed = discord.Embed(
                 colour=discord.Colour.green(),
                 description=f"**Command Executed:**\n"
-                            f"{command}")
+                            f"{results}")
         except Exception as e:
             logging.error(e)
             embed = discord.Embed(

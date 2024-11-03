@@ -2,6 +2,7 @@ import discord
 import requests
 import json
 import logging
+import sqlite3
 from discord.ext import commands
 from discord import app_commands
 
