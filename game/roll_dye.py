@@ -26,7 +26,7 @@ def roll_dye(username, bot):
 
             logging.warning(f"{username} rolled {dye_name}!")
             bot.chat(f'/gc {username}: Found {dye_name}!')
-            embed = discord.Embed(color=discord.Color.from_str(hex_color), title=username,
+            embed = discord.Embed(color=discord.Color.from_str(f"#{hex_color.lower()}"), title=username,
                                   description=f"Dropped **{dye_name}**!")
             dye_webhook.send(embed=embed)
         connection.commit()
