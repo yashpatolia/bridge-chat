@@ -18,7 +18,6 @@ def roll_dye(username, bot):
 
         dye_ids, weights = zip(*results)
         loot_id = random.choices(list(dye_ids), weights=list(weights), k=1)[0]
-        loot_id = 'bone_dye'
         if loot_id != "nothing":
             cursor.execute("SELECT dye_name, hex FROM dyes WHERE dye_id = ?", (loot_id,))
             dye_name, hex_color = cursor.fetchone()
