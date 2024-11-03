@@ -20,7 +20,7 @@ def roll_dye(username, bot):
         loot_id = random.choices(list(dye_ids), weights=list(weights), k=1)[0]
         loot_id = 'bone_dye'
         if loot_id != "nothing":
-            cursor.execute("SELECT dye_name FROM dyes WHERE dye_id = ?", (loot_id,))
+            cursor.execute("SELECT dye_name, hex FROM dyes WHERE dye_id = ?", (loot_id,))
             dye_name, hex_color = cursor.fetchone()
             cursor.execute("UPDATE users_dyes SET received = TRUE WHERE dye_id = ?", (loot_id,))
 
