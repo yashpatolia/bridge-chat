@@ -1,0 +1,19 @@
+import requests
+import logging
+import sqlite3
+
+
+def get_uuid(username):
+    with sqlite3.connect("temporals.db") as connection:
+        cursor = connection.cursor()
+        cursor.execute(f'''SELECT uuid FROM users WHERE ign = "{username}"''')
+        uuid = cursor.fetchone()
+
+        if uuid:
+            return uuid[0]
+
+        uuid = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{username}").json()['id']
+        logging.info(f"GET https://api.mojang.com/users/profiles/minecraft/{username}")
+        cursor.execute("INSERT INTO users (uuid, ign) VALUES (?, ?)", (uuid, username))
+        connection.commit()
+        return uuid
