@@ -25,7 +25,7 @@ def roll_dye(username, bot):
         if loot_id != "nothing" and obtained == 0:
             cursor.execute("SELECT dye_name, weight, hex FROM dyes WHERE dye_id = ?", (loot_id,))
             dye_name, weight, hex_color = cursor.fetchone()
-            cursor.execute("UPDATE users_dyes SET received = TRUE WHERE dye_id = ?", (loot_id,))
+            cursor.execute("UPDATE users_dyes SET received = TRUE WHERE dye_id = ? AND uuid = ?", (loot_id,uuid))
 
             logging.warning(f"{username} unlocked {dye_name}!")
             bot.chat(f'/gc {username}: Found {dye_name}!')
