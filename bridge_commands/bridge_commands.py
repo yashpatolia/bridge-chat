@@ -33,7 +33,7 @@ def bridge_commands(message, username, guild_rank, bot):
         if username.lower() != 'seazyns':
             return 'Not authorized'
 
-        results = sql_eval(message.replace('.db ', ''))
+        results = sql_eval(message.replace('.db ', ''), fetch_all=False)
         bot.chat(f'/gc {username}: {results}')
         return f"{username}: {results}"
 
