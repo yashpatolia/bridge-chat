@@ -25,8 +25,6 @@ class Link(commands.Cog):
             uuid = get_uuid(ign)
 
             if discord_name != interaction.user.name:
-                print(discord_name)
-                print(interaction.user.name)
                 embed = discord.Embed(
                     colour=discord.Colour.green(),
                     description=f"Your discord in-game is not linked correctly.")

@@ -1,8 +1,6 @@
 import asyncio
 import discord
-import json
 import logging
-import requests
 import sqlite3
 from discord.ext import commands
 from discord import app_commands
@@ -32,11 +30,8 @@ class Roles(commands.Cog):
 
                 if result is not None:
                     if guild_member in interaction.user.roles:  # Guild Roles
-                        cursor.execute("SELECT uuid, ign FROM users WHERE discord_id = ?", (interaction.user.id,))
-                        results = cursor.fetchone()
-                        uuid = results[0]
-                        ign = results[1]
-
+                        cursor.execute("SELECT ign FROM users WHERE discord_id = ?", (interaction.user.id,))
+                        ign = cursor.fetchone()[0]
                         sb_level = get_skyblock_level(ign)
 
                         if 250 <= sb_level < 300:
