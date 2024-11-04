@@ -9,7 +9,7 @@ def sql_eval(command: str, fetch_all = True):
             cursor.execute(command)
             logging.info(f'[DB] {command}')
             if command.startswith('select'):
-                results = (cursor.fetchall() if fetch_all else cursor.fetchone()[0])
+                results = (cursor.fetchall() if fetch_all else cursor.fetchone())
                 return results
             else:
                 connection.commit()
