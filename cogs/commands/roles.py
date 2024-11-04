@@ -12,7 +12,7 @@ class Roles(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @app_commands.command(name="roles", description="Claim all available roles (Requires /verify)")
+    @app_commands.command(name="roles", description="Claim all available roles")
     async def roles(self, interaction: discord.Interaction):
         await interaction.response.defer()
 

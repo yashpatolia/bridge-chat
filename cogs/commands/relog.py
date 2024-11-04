@@ -13,7 +13,7 @@ class Relog(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @app_commands.command(name="relog", description="Relogs the bridge bot (Management Required)")
+    @app_commands.command(name="relog", description="Relogs the bridge bot")
     async def relog(self, interaction: discord.Interaction):
         await interaction.response.defer()
 

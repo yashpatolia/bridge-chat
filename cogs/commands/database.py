@@ -1,9 +1,8 @@
 import discord
-import sqlite3
-import logging
 from discord.ext import commands
 from discord import app_commands
 from config import OWNER_ID
+from utils.sql_eval import sql_eval
 
 
 class Database(commands.Cog):
@@ -17,24 +16,10 @@ class Database(commands.Cog):
         if interaction.user.id != OWNER_ID:
             return
 
-        connection = sqlite3.connect('temporals.db')
-        cursor = connection.cursor()
-        try:
-            cursor.execute(f'''{command}''')
-            results = cursor.fetchall()
-            connection.commit()
-            connection.close()
-            embed = discord.Embed(
-                colour=discord.Colour.green(),
-                description=f"**Command Executed:**\n"
-                            f"{results}")
-        except Exception as e:
-            logging.error(e)
-            embed = discord.Embed(
-                colour=discord.Colour.red(),
-                description=f"**Error Executing:**\n"
-                            f"{e}")
-
+        results = sql_eval(command)
+        embed = discord.Embed(
+            colour=discord.Colour.green(),
+            description=f"**Command Executed:**\n{results}")
         await interaction.edit_original_response(embed=embed)
 
 

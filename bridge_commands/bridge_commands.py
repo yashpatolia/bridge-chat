@@ -1,6 +1,7 @@
 from bridge_commands.guild_rank import guild_rank_change
 from utils.get_skyblock_level import get_skyblock_level
 from utils.get_networth import get_networth
+from utils.sql_eval import sql_eval
 
 
 def bridge_commands(message, username, guild_rank, bot):
@@ -8,6 +9,7 @@ def bridge_commands(message, username, guild_rank, bot):
     message = message.lower()
 
     if message.split(' ')[0] in ['.bridge', '.help']:  # Help
+        text = '.help'
         bot.chat(f'/gc {username}: '
                  f'.rankup - '
                  f'.level (ign) - '
@@ -26,5 +28,13 @@ def bridge_commands(message, username, guild_rank, bot):
         networth = get_networth(username)
         bot.chat(f'/gc {username}: Highest Networth - {networth}')
         return f"{username}'s Highest Networth: {networth}"
+
+    elif message.split(' ')[0] in ['.db']:  # DB Eval
+        if username.lower() != 'seazyns':
+            return 'Not authorized'
+
+        results = sql_eval(message.sub('.db ', ''))
+        bot.chat(f'/gc {username}: {results}')
+        return f"{username}: {results}"
 
     return text
