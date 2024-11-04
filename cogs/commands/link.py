@@ -29,13 +29,14 @@ class Link(commands.Cog):
                     colour=discord.Colour.green(),
                     description=f"Your discord in-game is not linked correctly.")
                 await interaction.edit_original_response(embed=embed)
+                return
 
             with sqlite3.connect("temporals.db") as connection:
                 cursor = connection.cursor()
                 connection.execute("PRAGMA foreign_keys = ON;")
 
                 cursor.execute("SELECT discord_id FROM users WHERE uuid = ?", (uuid,))
-                user_check = cursor.fetchone()[0]
+                user_check = cursor.fetchone()
 
                 if user_check is not None:
                     embed = discord.Embed(

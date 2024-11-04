@@ -3,9 +3,11 @@ import discord
 import json
 import logging
 import requests
+import sqlite3
 from discord.ext import commands
 from discord import app_commands
-from config import GUILD_MEMBER
+from config import GUILD_MEMBER, PAST, PRESENT, FUTURE
+from utils.get_skyblock_level import get_skyblock_level
 
 
 class Roles(commands.Cog):
@@ -21,41 +23,35 @@ class Roles(commands.Cog):
             roles_to_give = []
             guild_member = interaction.guild.get_role(GUILD_MEMBER)
 
-            with open('discord.json', 'r') as file:
-                discord_data = json.load(file)
+            with sqlite3.connect("temporals.db") as connection:
+                cursor = connection.cursor()
+                connection.execute("PRAGMA foreign_keys = ON;")
 
-            with open('users.json', 'r') as file:
-                user_data = json.load(file)
+                cursor.execute("SELECT 1 FROM users WHERE discord_id = ?", (interaction.user.id,))
+                result = cursor.fetchone()
 
-            if str(interaction.user.id) not in discord_data['users'].keys():  # Not Verified
-                embed = discord.Embed(
-                    colour=discord.Colour.red(),
-                    description=f"**Not Verified!**\n"
-                                f"Run `/verify (ign)`")
-                await interaction.edit_original_response(embed=embed)
+                if result is not None:
+                    if guild_member in interaction.user.roles:  # Guild Roles
+                        cursor.execute("SELECT uuid, ign FROM users WHERE discord_id = ?", (interaction.user.id,))
+                        results = cursor.fetchone()
+                        uuid = results[0]
+                        ign = results[1]
 
-            if guild_member in interaction.user.roles:  # Guild Roles
-                uuid = discord_data['users'][str(interaction.user.id)]
-                username = user_data['users'][uuid]
-                sb_level = 0
-                data = requests.get(f"https://sky.shiiyu.moe/api/v2/profile/{username}").json()
-                logging.info(f"GET https://sky.shiiyu.moe/api/v2/profile/{username}")
+                        sb_level = get_skyblock_level(ign)
 
-                for profile in data['profiles']:
-                    try:
-                        level = data['profiles'][profile]['data']['skyblock_level']['levelWithProgress']
-                        sb_level = level if level > sb_level else sb_level
-                    except Exception as e:
-                        logging.error(e)
+                        if 250 <= sb_level < 300:
+                            roles_to_give.append(interaction.guild.get_role(PAST))
+                        elif 300 <= sb_level < 350:
+                            roles_to_give.append(interaction.guild.get_role(PRESENT))
+                        elif 350 <= sb_level:
+                            roles_to_give.append(interaction.guild.get_role(FUTURE))
 
-                # if 240 <= sb_level < 280:
-                #     roles_to_give.append(interaction.guild.get_role(BABY_BEE))
-                # elif 280 <= sb_level < 320:
-                #     roles_to_give.append(interaction.guild.get_role(TODDLER_BEE))
-                # elif 320 <= sb_level < 360:
-                #     roles_to_give.append(interaction.guild.get_role(SWEATY_BEE))
-                # elif 360 <= sb_level:
-                #     roles_to_give.append(interaction.guild.get_role(ULTIMATE_BEE))
+                else:
+                    embed = discord.Embed(
+                        colour=discord.Colour.red(),
+                        description=f"**Not Verified!**\n"
+                                    f"Run `/verify (ign)`")
+                    await interaction.edit_original_response(embed=embed)
 
             for role in roles_to_give:
                 roles += f"{role.mention} "
