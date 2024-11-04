@@ -8,7 +8,7 @@ def sql_eval(command: str):
         try:
             cursor.execute(command)
             logging.info(f'[DB] {command}')
-            if command.startswith('SELECT'):
+            if command.startswith('select'):
                 results = cursor.fetchall()
                 return results
             else:
