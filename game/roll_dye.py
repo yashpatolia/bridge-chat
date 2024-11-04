@@ -21,6 +21,7 @@ def roll_dye(username, bot):
 
         cursor.execute("SELECT received FROM users_dyes WHERE dye_id = ? AND uuid = ?", (loot_id, uuid))
         obtained = cursor.fetchone()[0]
+        logging.info(f"{username} rolled {loot_id} (Obtained: {obtained})")
 
         if loot_id != "nothing" and obtained == 0:
             cursor.execute("SELECT dye_name, weight, hex FROM dyes WHERE dye_id = ?", (loot_id,))
