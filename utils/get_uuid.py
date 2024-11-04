@@ -14,6 +14,6 @@ def get_uuid(username):
 
         uuid = requests.get(f"https://api.mojang.com/users/profiles/minecraft/{username}").json()['id']
         logging.info(f"GET https://api.mojang.com/users/profiles/minecraft/{username}")
-        cursor.execute("INSERT INTO users (uuid, ign) VALUES (?, ?)", (uuid, username))
+        cursor.execute("INSERT INTO users (uuid, ign) VALUES (?, ?)", (uuid, username.lower()))
         connection.commit()
         return uuid
