@@ -20,11 +20,13 @@ class Link(commands.Cog):
             data = requests.get(f"https://sky.shiiyu.moe/api/v2/profile/{ign}").json()
             logging.info(f"GET https://sky.shiiyu.moe/api/v2/profile/{ign}")
             profile = list(data['profiles'].keys())[0]
-            discord_display_name = data['profiles'][profile]['data']['social']['DISCORD']
+            discord_name = data['profiles'][profile]['data']['social']['DISCORD']
             username = data['profiles'][profile]['data']['display_name']
             uuid = get_uuid(ign)
 
-            if discord_display_name != interaction.user.display_name:
+            if discord_name != interaction.user.display_name:
+                print(discord_name)
+                print(interaction.user.display_name)
                 embed = discord.Embed(
                     colour=discord.Colour.green(),
                     description=f"Your discord in-game is not linked correctly.")
@@ -46,13 +48,13 @@ class Link(commands.Cog):
                     return
 
                 cursor.execute("UPDATE users SET discord_id = ?, discord_name = ? WHERE uuid = ?",
-                        (interaction.user.id, discord_display_name, uuid))
+                        (interaction.user.id, discord_name, uuid))
                 connection.commit()
 
                 embed = discord.Embed(
                     colour=discord.Colour.green(),
                     description=f"__**Successfully Linked!**__\n"
-                                f"**Discord:** {discord_display_name}\n"
+                                f"**Discord:** {discord_name}\n"
                                 f"**IGN:** {username}\n"
                                 f"**UUID:** {uuid}")
                 await interaction.edit_original_response(embed=embed)
