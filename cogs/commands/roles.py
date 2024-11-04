@@ -44,8 +44,8 @@ class Roles(commands.Cog):
                 else:
                     embed = discord.Embed(
                         colour=discord.Colour.red(),
-                        description=f"**Not Verified!**\n"
-                                    f"Run `/verify (ign)`")
+                        description=f"**Not Linked!**\n"
+                                    f"Run `/link (ign)`")
                     await interaction.edit_original_response(embed=embed)
 
             for role in roles_to_give:

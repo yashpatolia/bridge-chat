@@ -1,6 +1,5 @@
 import time
-import requests
-import logging
+from utils.get_skyblock_level import get_skyblock_level
 
 
 def guild_rank_change(username, guild_rank, bot):
@@ -9,17 +8,7 @@ def guild_rank_change(username, guild_rank, bot):
         bot.chat(f'/gc {username}: No rank change possible!')
         return f"{username}: No rank change possible!"
 
-    data = requests.get(f"https://sky.shiiyu.moe/api/v2/profile/{username}").json()
-    logging.info(f"GET https://sky.shiiyu.moe/api/v2/profile/{username}")
-    skyblock_level = 0
-
-    for profile in data['profiles']:
-        try:
-            level = data['profiles'][profile]['data']['skyblock_level']['levelWithProgress']
-            skyblock_level = level if level > skyblock_level else skyblock_level
-        except Exception as e:
-            logging.error(e)
-
+    skyblock_level = get_skyblock_level(username)
     required_rank = [rank for rank, level in guild_ranks.items() if level < skyblock_level][-1]
     required_rank_index = list(guild_ranks.keys()).index(required_rank)
     guild_rank_index = list(guild_ranks.keys()).index(guild_rank)

@@ -9,13 +9,13 @@ def bridge_commands(message, username, guild_rank, bot):
     message = message.lower()
 
     if message.split(' ')[0] in ['.bridge', '.help']:  # Help
-        text = '.help'
         bot.chat(f'/gc {username}: '
                  f'.rankup - '
                  f'.level (ign) - '
                  f'.networth (ign)')
+        return '.help'
     elif message.split(' ')[0] in ['.updaterank', '.upgraderank', '.rankup', ".demote", ".derank"]:  # Rankup
-        text = guild_rank_change(username, guild_rank, bot)
+        return guild_rank_change(username, guild_rank, bot)
     elif message.split(' ')[0] in ['.level', '.lvl', '.sblevel']:  # Skyblock Level
         if len(message.split(' ')) > 1:
             username = message.split(' ')[1]
@@ -36,5 +36,3 @@ def bridge_commands(message, username, guild_rank, bot):
         results = sql_eval(message.replace('.db ', ''), fetch_all=False)
         bot.chat(f'/gc {username}: {results}')
         return f"{username}: {results}"
-
-    return text
