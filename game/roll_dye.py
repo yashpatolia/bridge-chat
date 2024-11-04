@@ -23,13 +23,13 @@ def roll_dye(username, bot):
         obtained = cursor.fetchone()[0]
 
         if loot_id != "nothing" and obtained == 0:
-            cursor.execute("SELECT dye_name, hex FROM dyes WHERE dye_id = ?", (loot_id,))
-            dye_name, hex_color = cursor.fetchone()
+            cursor.execute("SELECT dye_name, weight, hex FROM dyes WHERE dye_id = ?", (loot_id,))
+            dye_name, weight, hex_color = cursor.fetchone()
             cursor.execute("UPDATE users_dyes SET received = TRUE WHERE dye_id = ?", (loot_id,))
 
             logging.warning(f"{username} unlocked {dye_name}!")
             bot.chat(f'/gc {username}: Found {dye_name}!')
             embed = discord.Embed(color=discord.Color.from_str(f"#{hex_color.lower()}"), title=username,
-                                  description=f"Unlocked **{dye_name}**!")
+                                  description=f"Unlocked **{dye_name}** (1/{round(100/weight)})!\n")
             dye_webhook.send(embed=embed)
         connection.commit()
