@@ -7,6 +7,7 @@ def sql_eval(command: str):
         connection.execute("PRAGMA foreign_keys = ON;")
         try:
             cursor.execute(command)
+            logging.info(f'[DB] {command}')
             if command.startswith('SELECT'):
                 results = cursor.fetchall()
                 return results
