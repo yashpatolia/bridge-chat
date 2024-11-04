@@ -5,6 +5,7 @@ import logging
 import sqlite3
 from discord.ext import commands
 from discord import app_commands
+from utils.get_uuid import get_uuid
 
 
 class Link(commands.Cog):
@@ -15,28 +16,47 @@ class Link(commands.Cog):
     @app_commands.describe(ign="Enter an IGN")
     async def link(self, interaction: discord.Interaction, ign: str):
         await interaction.response.defer()
+
         try:
             data = requests.get(f"https://sky.shiiyu.moe/api/v2/profile/{ign}").json()
             logging.info(f"GET https://sky.shiiyu.moe/api/v2/profile/{ign}")
             profile = list(data['profiles'].keys())[0]
-            discord_name = data['profiles'][profile]['data']['social']['DISCORD']
+            discord_display_name = data['profiles'][profile]['data']['social']['DISCORD']
             username = data['profiles'][profile]['data']['display_name']
-            uuid = data['profiles'][profile]['data']['uuid']
+            uuid = get_uuid(ign)
 
-            with open('discord.json', 'r') as file:
-                discord_data = json.load(file)
+            if discord_display_name != interaction.user.display_name:
+                embed = discord.Embed(
+                    colour=discord.Colour.green(),
+                    description=f"Your discord in-game is not linked correctly.")
+                await interaction.edit_original_response(embed=embed)
 
-            discord_data['users'][interaction.user.id] = uuid
+            with sqlite3.connect("temporals.db") as connection:
+                cursor = connection.cursor()
+                connection.execute("PRAGMA foreign_keys = ON;")
 
-            with open('discord.json', 'w') as file:
-                file.write(json.dumps(discord_data, indent=4))
+                cursor.execute("SELECT discord_id FROM users WHERE uuid = ?", (uuid,))
+                user_check = cursor.fetchone()[0]
 
-            embed = discord.Embed(
-                colour=discord.Colour.green(),
-                description=f"__**Successfully Linked!**__\n"
-                            f"**Discord:** {discord_name}\n"
-                            f"**IGN:** {username}")
-            await interaction.edit_original_response(embed=embed)
+                if user_check is not None:
+                    embed = discord.Embed(
+                        colour=discord.Colour.green(),
+                        description=f"Already Linked.")
+                    await interaction.edit_original_response(embed=embed)
+                    return
+
+                cursor.execute("UPDATE users SET discord_id = ? AND discord_name = ? WHERE uuid = ?",
+                        (interaction.user.id, discord_display_name, uuid))
+                connection.commit()
+
+                embed = discord.Embed(
+                    colour=discord.Colour.green(),
+                    description=f"__**Successfully Linked!**__\n"
+                                f"**Discord:** {discord_display_name}\n"
+                                f"**IGN:** {username}\n"
+                                f"**UUID:** {uuid}")
+                await interaction.edit_original_response(embed=embed)
+
         except Exception as e:
             logging.error(e)
             embed = discord.Embed(
