@@ -6,7 +6,7 @@ import sqlite3
 def get_uuid(username):
     with sqlite3.connect("temporals.db") as connection:
         cursor = connection.cursor()
-        cursor.execute("SELECT uuid FROM users WHERE ign = ?", (username,))
+        cursor.execute("SELECT uuid FROM users WHERE ign = ?", (username.lower(),))
         uuid = cursor.fetchone()
 
         if uuid:
