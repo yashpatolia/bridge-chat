@@ -18,14 +18,18 @@ def roll_dye(username, bot):
 
         dye_ids, weights = zip(*results)
         loot_id = random.choices(list(dye_ids), weights=list(weights), k=1)[0]
-        if loot_id != "nothing":
+
+        cursor.execute("SELECT received FROM users_dyes WHERE dye_id = ? AND uuid = ?", (loot_id, uuid))
+        obtained = cursor.fetchone()[0]
+
+        if loot_id != "nothing" and obtained == 0:
             cursor.execute("SELECT dye_name, hex FROM dyes WHERE dye_id = ?", (loot_id,))
             dye_name, hex_color = cursor.fetchone()
             cursor.execute("UPDATE users_dyes SET received = TRUE WHERE dye_id = ?", (loot_id,))
 
-            logging.warning(f"{username} rolled {dye_name}!")
+            logging.warning(f"{username} unlocked {dye_name}!")
             bot.chat(f'/gc {username}: Found {dye_name}!')
             embed = discord.Embed(color=discord.Color.from_str(f"#{hex_color.lower()}"), title=username,
-                                  description=f"Dropped **{dye_name}**!")
+                                  description=f"Unlocked **{dye_name}**!")
             dye_webhook.send(embed=embed)
         connection.commit()
