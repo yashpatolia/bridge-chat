@@ -44,7 +44,7 @@ class Link(commands.Cog):
                     await interaction.edit_original_response(embed=embed)
                     return
 
-                cursor.execute("UPDATE users SET discord_id = ? AND discord_name = ? WHERE uuid = ?",
+                cursor.execute("UPDATE users SET discord_id = ?, discord_name = ? WHERE uuid = ?",
                         (interaction.user.id, discord_display_name, uuid))
                 connection.commit()
 
