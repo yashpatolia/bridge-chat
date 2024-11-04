@@ -36,7 +36,7 @@ class Link(commands.Cog):
                 connection.execute("PRAGMA foreign_keys = ON;")
 
                 cursor.execute("SELECT discord_id FROM users WHERE uuid = ?", (uuid,))
-                user_check = cursor.fetchone()
+                user_check = cursor.fetchone()[0]
 
                 if user_check is not None:
                     embed = discord.Embed(
