@@ -3,11 +3,12 @@ import logging
 import sqlite3
 import discord
 from utils.get_uuid import get_uuid
-from config import DYE_DROPS_CHANNEL
+from config import DYE_DROPS_CHANNEL, BRIDGE_CHANNEL
 
 
 def roll_dye(username, bot):
     uuid = get_uuid(username)
+    bridge_webhook = discord.SyncWebhook.from_url(BRIDGE_CHANNEL)
     dye_webhook = discord.SyncWebhook.from_url(DYE_DROPS_CHANNEL)
 
     with sqlite3.connect("temporals.db") as connection:
@@ -29,8 +30,9 @@ def roll_dye(username, bot):
             cursor.execute("UPDATE users_dyes SET received = TRUE WHERE dye_id = ? AND uuid = ?", (loot_id,uuid))
 
             logging.warning(f"{username} unlocked {dye_name}!")
-            bot.chat(f'/gc {username}: Found {dye_name}!')
+            bot.chat(f'/gc DYE DROP: {username} found {dye_name} (1/{round(100/weight)})!')
             embed = discord.Embed(color=discord.Color.from_str(f"#{hex_color.lower()}"), title=username,
                                   description=f"Unlocked **{dye_name}** (1/{round(100/weight)})!\n")
+            bridge_webhook.send(embed=embed)
             dye_webhook.send(embed=embed)
         connection.commit()
