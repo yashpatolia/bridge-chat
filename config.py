@@ -99,6 +99,7 @@ DYE_EMOJIS = {
     "byzantium_dye": 1303455685349998642,
     "brick_red_dye": 1303455676185448479,
     "bone_dye": 1303455650558251041,
-    "aquamarine_dye": 1303455664181612604
+    "aquamarine_dye": 1303455664181612604,
+    "archfiend_dye": 1303804683730813100
 }
 
