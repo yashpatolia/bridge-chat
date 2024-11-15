@@ -63,7 +63,8 @@ DYE_ROLES = {
     "byzantium_dye": 1303457901108527146,
     "brick_red_dye": 1303457846163279915,
     "bone_dye": 1303457924542234768,
-    "aquamarine_dye": 1303462864123592815
+    "aquamarine_dye": 1303462864123592815,
+    "archfiend_dye": 1303457835757080616
 }
 
 DYE_EMOJIS = {
