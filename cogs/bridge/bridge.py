@@ -3,7 +3,6 @@ import re
 import discord
 import asyncio
 import emoji
-from datetime import datetime
 from discord.ext import commands
 from javascript import On
 from config import OPTIONS, BRIDGE_CHANNEL, BRIDGE_CHANNEL_ID, OFFICER_CHANNEL, OFFICER_CHANNEL_ID
@@ -19,10 +18,6 @@ class Bridge(commands.Cog):
         def handle_message(this, username, message, *args):
             bridge_webhook = discord.SyncWebhook.from_url(BRIDGE_CHANNEL)
             officer_webhook = discord.SyncWebhook.from_url(OFFICER_CHANNEL)
-
-            embed = discord.Embed(
-                color=discord.Color.blue(),
-                timestamp=datetime.now())
 
             if username in ["Guild", "Officer"]:
                 if message.split(' ')[-1] in ["joined.", "left."]:
@@ -43,20 +38,15 @@ class Bridge(commands.Cog):
                         return
 
                     if message.split(' ')[0][0] == ".":  # Bot Commands
-                        text = bridge_commands(message, username, guild_rank, self.client.bot)
-                        bridge_webhook.send(text)
-                    else:
+                        bridge_commands(message, username, guild_rank, self.client.bot)
+                    else:  # Roll Dye
                         roll_dye(username, self.client.bot)
-
-                    embed.set_author(name=f"{username}", icon_url=f"https://mc-heads.net/avatar/{username}")
-                    embed.description = message
-                    embed.set_footer(text=f"{guild_rank}")
 
                     logging.info(f'[MC] {username}: {message}')
                     if state == "Guild":
-                        bridge_webhook.send(embed=embed)
+                        bridge_webhook.send(f"{message}", username=f"{username}", avatar_url=f"https://mc-heads.net/avatar/{username}")
                     elif state == "Officer":
-                        officer_webhook.send(embed=embed)
+                        officer_webhook.send(f"{message}", username=f"{username}", avatar_url=f"https://mc-heads.net/avatar/{username}")
                 except Exception as e:
                     logging.error(e)
                     return
