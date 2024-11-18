@@ -7,7 +7,7 @@ class ErrorHandling(commands.Cog):
         self.client = client
 
     @commands.Cog.listener()
-    async def on_command_error(self, interaction: discord.Interaction, error):
+    async def on_app_command_error(self, interaction: discord.Interaction, error):
         if isinstance(error, app_commands.MissingRole):
             await interaction.response.send_message("You don't have the required role.", ephemeral=True)
 
