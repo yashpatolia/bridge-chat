@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from config import OWNER_ID
+from config import OWNER_ID, GUILD_MASTER
 from utils.sql_eval import sql_eval
 
 
@@ -9,8 +9,9 @@ class Database(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @app_commands.command(name="db", description="Execute a database command")
+    @app_commands.command(name="database", description="Execute a database command")
     @app_commands.describe(command="Database command to execute")
+    @app_commands.checks.has_role(GUILD_MASTER)
     async def db(self, interaction: discord.Interaction, command: str):
         await interaction.response.defer()
         if interaction.user.id != OWNER_ID:
