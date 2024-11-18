@@ -74,7 +74,7 @@ class Bridge(commands.Cog):
             elif str(message.channel.id) == str(OFFICER_CHANNEL_ID):
                 self.client.bot.chat(f'/oc {message.content}')
 
-            try:
+            try:  # Rolling dyes through bridge
                 with sqlite3.connect("temporals.db") as connection:
                     cursor = connection.cursor()
                     connection.execute("PRAGMA foreign_keys = ON;")
@@ -84,8 +84,7 @@ class Bridge(commands.Cog):
 
                     if results is not None:
                         username = results[0]
-                        logging.info(username)
-                        # roll_dye(username, self.client.bot)
+                        roll_dye(username, self.client.bot)
             except Exception as e:
                 logging.error(e)
 
