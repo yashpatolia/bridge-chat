@@ -2,7 +2,7 @@ import requests
 import logging
 
 
-def get_skyblock_level(username):
+def get_skyblock_level(username) -> float:
     skyblock_level = 0
     data = requests.get(f"https://sky.shiiyu.moe/api/v2/profile/{username}").json()
     logging.info(f"GET https://sky.shiiyu.moe/api/v2/profile/{username}")

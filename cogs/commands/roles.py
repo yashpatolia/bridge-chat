@@ -7,13 +7,12 @@ from discord import app_commands
 from config import GUILD_MEMBER, PAST, PRESENT, FUTURE
 from utils.get_skyblock_level import get_skyblock_level
 
-
 class Roles(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @app_commands.command(name="roles", description="Claim all available roles")
-    async def roles(self, interaction: discord.Interaction):
+    async def roles(self, interaction: discord.Interaction) -> None:
         await interaction.response.defer()
 
         try:
@@ -25,13 +24,12 @@ class Roles(commands.Cog):
                 cursor = connection.cursor()
                 connection.execute("PRAGMA foreign_keys = ON;")
 
-                cursor.execute("SELECT 1 FROM users WHERE discord_id = ?", (interaction.user.id,))
+                cursor.execute("SELECT ign FROM users WHERE discord_id = ?", (interaction.user.id,))
                 result = cursor.fetchone()
 
                 if result is not None:
+                    ign = result[0]
                     if guild_member in interaction.user.roles:  # Guild Roles
-                        cursor.execute("SELECT ign FROM users WHERE discord_id = ?", (interaction.user.id,))
-                        ign = cursor.fetchone()[0]
                         sb_level = get_skyblock_level(ign)
 
                         if 250 <= sb_level < 300:
@@ -43,7 +41,7 @@ class Roles(commands.Cog):
 
                 else:
                     embed = discord.Embed(
-                        colour=discord.Colour.red(),
+                        colour=discord.Colour.dark_red(),
                         description=f"**Not Linked!**\n"
                                     f"Run `/link (ign)`")
                     await interaction.edit_original_response(embed=embed)
@@ -55,8 +53,9 @@ class Roles(commands.Cog):
 
             embed = discord.Embed(colour=discord.Colour.teal(), description="You already have all the roles!")
             if roles != "":
-                embed.description = ("**Successfully Added Roles!**\n"
-                                     f"**Roles:** {roles}")
+                embed.description = (
+                    "**Successfully Added Roles!**\n"
+                    f"**Roles:** {roles}")
             await interaction.edit_original_response(embed=embed)
         except Exception as e:
             logging.error(e)

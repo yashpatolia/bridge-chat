@@ -3,7 +3,7 @@ import logging
 import sqlite3
 
 
-def get_uuid(username):
+def get_uuid(username) -> str:
     with sqlite3.connect("temporals.db") as connection:
         cursor = connection.cursor()
         cursor.execute("SELECT uuid FROM users WHERE ign = ?", (username.lower(),))

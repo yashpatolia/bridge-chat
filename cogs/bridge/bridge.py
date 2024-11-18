@@ -10,13 +10,12 @@ from config import OPTIONS, BRIDGE_CHANNEL, BRIDGE_CHANNEL_ID, OFFICER_CHANNEL, 
 from bridge_commands.bridge_commands import bridge_commands
 from game.roll_dye import roll_dye
 
-
 class Bridge(commands.Cog):
     def __init__(self, client):
         self.client = client
 
         @On(self.client.bot, "chat")
-        def handle_message(this, username, message, *args):
+        def handle_message(this, username, message, *args) -> None:
             bridge_webhook = discord.SyncWebhook.from_url(BRIDGE_CHANNEL)
             officer_webhook = discord.SyncWebhook.from_url(OFFICER_CHANNEL)
 
@@ -53,7 +52,7 @@ class Bridge(commands.Cog):
                     return
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message) -> None:
         if message.author.bot:
             return
 
@@ -87,7 +86,6 @@ class Bridge(commands.Cog):
                         roll_dye(username, self.client.bot)
             except Exception as e:
                 logging.error(e)
-
 
 async def setup(client):
     await client.add_cog(Bridge(client))

@@ -6,14 +6,13 @@ from discord.ext import commands
 from discord import app_commands
 from utils.get_uuid import get_uuid
 
-
 class Link(commands.Cog):
     def __init__(self, client):
         self.client = client
 
     @app_commands.command(name="link", description="Link minecraft and discord")
     @app_commands.describe(ign="Enter an IGN")
-    async def link(self, interaction: discord.Interaction, ign: str):
+    async def link(self, interaction: discord.Interaction, ign: str) -> None:
         await interaction.response.defer()
 
         try:
@@ -26,7 +25,7 @@ class Link(commands.Cog):
 
             if discord_name != interaction.user.name:
                 embed = discord.Embed(
-                    colour=discord.Colour.green(),
+                    colour=discord.Colour.dark_red(),
                     description=f"Your discord in-game is not linked correctly.")
                 await interaction.edit_original_response(embed=embed)
                 return
@@ -49,21 +48,20 @@ class Link(commands.Cog):
                         (interaction.user.id, discord_name, uuid))
                 connection.commit()
 
-                embed = discord.Embed(
-                    colour=discord.Colour.green(),
-                    description=f"__**Successfully Linked!**__\n"
-                                f"**Discord:** {discord_name}\n"
-                                f"**IGN:** {username}\n"
-                                f"**UUID:** {uuid}")
-                await interaction.edit_original_response(embed=embed)
+            embed = discord.Embed(
+                colour=discord.Colour.green(),
+                description=f"__**Successfully Linked!**__\n"
+                            f"**Discord:** {discord_name}\n"
+                            f"**IGN:** {username}\n"
+                            f"**UUID:** {uuid}")
+            await interaction.edit_original_response(embed=embed)
 
         except Exception as e:
             logging.error(e)
             embed = discord.Embed(
-                colour=discord.Colour.red(),
+                colour=discord.Colour.dark_red(),
                 description=f"Error looking up IGN")
             await interaction.edit_original_response(embed=embed)
-
 
 async def setup(client):
     await client.add_cog(Link(client))

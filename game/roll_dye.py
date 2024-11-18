@@ -6,7 +6,7 @@ from utils.get_uuid import get_uuid
 from config import DYE_DROPS_CHANNEL, BRIDGE_CHANNEL
 
 
-def roll_dye(username, bot):
+def roll_dye(username, bot) -> None:
     uuid = get_uuid(username)
     bridge_webhook = discord.SyncWebhook.from_url(BRIDGE_CHANNEL)
     dye_webhook = discord.SyncWebhook.from_url(DYE_DROPS_CHANNEL)

@@ -5,9 +5,8 @@ from discord.ext import commands
 from javascript import Once, On
 from config import OPTIONS, BRIDGE_CHANNEL
 
-
 class Connections(commands.Cog):
-    def __init__(self, client):
+    def __init__(self, client) -> None:
         self.client = client
     
         @Once(self.client.bot, "spawn")
@@ -22,7 +21,7 @@ class Connections(commands.Cog):
             bridge_webhook.send(embed=embed)
 
         @On(self.client.bot, "end")
-        def end(this, event):
+        def end(this, event) -> None:
             if self.client.reason == "relog":
                 return
 
@@ -38,7 +37,6 @@ class Connections(commands.Cog):
                 await asyncio.sleep(5)
                 await self.client.start_mineflayer(restart=True)
             asyncio.run(reconnect())
-
 
 async def setup(client):
     await client.add_cog(Connections(client))

@@ -4,17 +4,16 @@ import os
 import logging
 from javascript import require
 from discord.ext import commands
-from config import OPTIONS, TOKEN
+from config import OPTIONS, TOKEN, GUILD_NAME
 
 mineflayer = require("mineflayer")
 logging.basicConfig(level=logging.INFO)
-
 
 class Client(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix="+", intents=discord.Intents.all())
         self.bot = None
-        self.reason: str = None
+        self.reason = None
         self.save_guild_list: bool = False
         self.guild_list = []
 
@@ -37,11 +36,10 @@ class Client(commands.Bot):
     
     async def on_ready(self):
         logging.info(f"Logged in as {self.user.name} (ID: {self.user.id})!")
-        game = discord.Game(name="Temporals Bridge")
+        game = discord.Game(name=f"{GUILD_NAME} Bridge")
         await self.change_presence(activity=game, status=discord.Status.online)
         synced = await self.tree.sync()
         logging.info(f"Synced {len(synced)} slash commands!")
-
 
 async def run_bot():
     async with Client() as client:

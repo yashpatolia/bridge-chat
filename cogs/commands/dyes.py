@@ -10,8 +10,8 @@ class Dyes(commands.Cog):
         self.client = client
 
     @app_commands.command(name="dyes", description="Show owned dyes & select color")
-    @app_commands.describe(dye="Enter name to invite to the guild")
-    async def dyes(self, interaction: discord.Interaction, dye: str):
+    @app_commands.describe(dye="Enter a dye to recieve the color role")
+    async def dyes(self, interaction: discord.Interaction, dye: str) -> None:
         await interaction.response.defer()
         for dye_id, dye_role_id in DYE_ROLES.items():
             dye_role = interaction.guild.get_role(dye_role_id)
@@ -28,8 +28,9 @@ class Dyes(commands.Cog):
             cursor.execute("SELECT hex, dye_name FROM dyes WHERE dye_id = ?", (dye,))
             results = cursor.fetchone()
 
-        embed = discord.Embed(color=discord.Color.from_str(f"#{results[0].lower()}"),
-                              description=f"**Selected:** <:{dye}:{DYE_EMOJIS[dye]}> {results[1]}")
+        embed = discord.Embed(
+            color = discord.Color.from_str(f"#{results[0].lower()}"),
+            description = f"**Selected:** <:{dye}:{DYE_EMOJIS[dye]}> {results[1]}")
 
         await interaction.edit_original_response(embed=embed)
 
@@ -46,13 +47,12 @@ class Dyes(commands.Cog):
             uuid = uuid[0]
 
             cursor.execute("SELECT dye_id FROM users_dyes WHERE uuid = ? AND received = TRUE", (uuid,))
-            unlocked_dyes: List = cursor.fetchall()
+            unlocked_dyes = cursor.fetchall()
 
         return [
             app_commands.Choice(name=dye_id[0].replace('_', ' ').title(), value=dye_id[0])
             for dye_id in unlocked_dyes if current.lower() in dye_id[0].replace('_', ' ').lower()
         ]
-
 
 async def setup(client):
     await client.add_cog(Dyes(client))
