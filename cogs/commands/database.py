@@ -13,11 +13,11 @@ class Database(commands.Cog):
     @app_commands.describe(command="How many results to fetch")
     @app_commands.checks.has_role(GUILD_MASTER)
     @app_commands.choices(fetch=[
-        app_commands.Choice(name="all", value = True),
-        app_commands.Choice(name="one", value = False)
+        app_commands.Choice(name="all", value = 1),
+        app_commands.Choice(name="one", value = 2)
     ])
-    async def db(self, interaction: discord.Interaction, command: str, fetch: app_commands.Choice[bool]) -> None:
-        results = sql_eval(command, fetch_all=fetch)
+    async def db(self, interaction: discord.Interaction, command: str, fetch: app_commands.Choice[int]) -> None:
+        results = sql_eval(command, fetch_all = True if fetch == 1 else False)
         embed = discord.Embed(
             colour=discord.Colour.green(),
             description=f"**Command Executed:**\n{results}")
