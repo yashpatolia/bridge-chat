@@ -15,21 +15,19 @@ class Connections(commands.Cog):
 
             bridge_webhook = discord.SyncWebhook.from_url(BRIDGE_CHANNEL)
             embed = discord.Embed(
-                title="Bridge Online",
-                description=f"`Connected to {OPTIONS['host']}`",
-                color=discord.Color.green())
+                description=f"**Connected to:** `{OPTIONS['host']}`",
+                color=discord.Color.dark_green())
             bridge_webhook.send(embed=embed)
 
         @On(self.client.bot, "end")
         def end(this, event) -> None:
             if self.client.reason == "relog":
                 return
-
             logging.info(f"[Bot] Disconnected")
-            
+
             bridge_webhook = discord.SyncWebhook.from_url(BRIDGE_CHANNEL)
             embed = discord.Embed(
-                description=f"**Disconnected from `{OPTIONS['host']}`**\nRestarting **{OPTIONS['username']}** in 5 seconds!",
+                description=f"**Disconnected from:** `{OPTIONS['host']}`\nRestarting `{OPTIONS['username']}` in 5 seconds!",
                 color=discord.Color.orange())
             bridge_webhook.send(embed=embed)
 
