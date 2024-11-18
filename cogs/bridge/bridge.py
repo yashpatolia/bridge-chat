@@ -84,7 +84,7 @@ class Bridge(commands.Cog):
 
                     if results is not None:
                         username = results[0]
-                        logging.debug(username)
+                        logging.info(username)
                         # roll_dye(username, self.client.bot)
             except Exception as e:
                 logging.error(e)
