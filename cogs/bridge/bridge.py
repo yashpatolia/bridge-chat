@@ -3,6 +3,7 @@ import re
 import discord
 import asyncio
 import emoji
+import sqlite3
 from discord.ext import commands
 from javascript import On
 from config import OPTIONS, BRIDGE_CHANNEL, BRIDGE_CHANNEL_ID, OFFICER_CHANNEL, OFFICER_CHANNEL_ID
@@ -73,14 +74,20 @@ class Bridge(commands.Cog):
             elif str(message.channel.id) == str(OFFICER_CHANNEL_ID):
                 self.client.bot.chat(f'/oc {message.content}')
 
-        for attachment in message.attachments:  # Attachments
-            await asyncio.sleep(0.5)
-            logging.info(f"[D] {message.author.display_name}: {attachment.url.split('?')[0]}")
+            try:
+                with sqlite3.connect("temporals.db") as connection:
+                    cursor = connection.cursor()
+                    connection.execute("PRAGMA foreign_keys = ON;")
 
-            if str(message.channel.id) == str(BRIDGE_CHANNEL_ID):
-                self.client.bot.chat(f'/gc {message.author.display_name}: {attachment.url.split("?")[0]}')
-            elif str(message.channel.id) == str(OFFICER_CHANNEL_ID):
-                self.client.bot.chat(f'/oc {message.author.display_name}: {attachment.url.split("?")[0]}')
+                    cursor.execute("SELECT ign FROM users WHERE discord_id = ?", (message.author.id,))
+                    results = cursor.fetchone()
+
+                    if results is not None:
+                        username = results[0]
+                        logging.debug(username)
+                        # roll_dye(username, self.client.bot)
+            except Exception as e:
+                logging.error(e)
 
 
 async def setup(client):
