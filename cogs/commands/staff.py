@@ -23,7 +23,7 @@ class StaffCommands(commands.GroupCog, name="staff"):
                 cursor = connection.cursor()
                 connection.execute("PRAGMA foreign_keys = ON;")
 
-                cursor.execute("SELECT discord_id FROM users WHERE uuid = ?", (uuid,))
+                cursor.execute("SELECT ign FROM users WHERE uuid = ?", (uuid,))
                 user_check = cursor.fetchone()[0]
 
                 if user_check is not None:
