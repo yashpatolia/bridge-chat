@@ -2,6 +2,7 @@ import random
 import logging
 import sqlite3
 import discord
+import time
 from utils.get_uuid import get_uuid
 from config import DYE_DROPS_CHANNEL, BRIDGE_CHANNEL
 
@@ -30,6 +31,7 @@ def roll_dye(username, bot) -> None:
             cursor.execute("UPDATE users_dyes SET received = TRUE WHERE dye_id = ? AND uuid = ?", (loot_id,uuid))
 
             logging.warning(f"{username} unlocked {dye_name}!")
+            time.sleep(0.5)
             bot.chat(f'/gc DYE DROP: {username} found {dye_name} (1/{round(100/weight)})!')
             embed = discord.Embed(color=discord.Color.from_str(f"#{hex_color.lower()}"), title=username,
                                   description=f"Unlocked **{dye_name}** (1/{round(100/weight)})!\n")
