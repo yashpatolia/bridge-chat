@@ -28,7 +28,7 @@ class StaffCommands(commands.GroupCog, name="staff"):
 
                 if user_check is not None:
                     cursor.execute("UPDATE users SET discord_id = ?, discord_name = ? WHERE uuid = ?",
-                                   (member.id, member.name))
+                                   (member.id, member.name, uuid))
                 else:
                     cursor.execute("INSERT INTO users (uuid, ign, discord_id, discord_name) values (?, ?, ?, ?)",
                                    (uuid, ign.lower(), member.id, member.name))
