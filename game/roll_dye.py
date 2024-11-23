@@ -21,10 +21,6 @@ def roll_dye(username, bot) -> None:
         dye_ids, weights, rates = zip(*results)
         loot_id = random.choices(list(dye_ids), weights=[a*b for a,b in zip(weights,rates)], k=1)[0]
 
-        logging.error(weights)
-        logging.error(rates)
-        logging.error([a*b for a,b in zip(weights,rates)])
-
         cursor.execute("SELECT received FROM users_dyes WHERE dye_id = ? AND uuid = ?", (loot_id, uuid))
         obtained = cursor.fetchone()[0]
         logging.info(f"{username} rolled {loot_id} (Obtained: {obtained})")
