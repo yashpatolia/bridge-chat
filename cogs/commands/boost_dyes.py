@@ -43,13 +43,7 @@ class BoostDyes(commands.Cog):
             cursor = connection.cursor()
             connection.execute("PRAGMA foreign_keys = ON;")
 
-            cursor.execute("SELECT uuid FROM users WHERE discord_id = ?", (interaction.user.id,))
-            uuid = cursor.fetchone()
-            if uuid is None:
-                return []
-            uuid = uuid[0]
-
-            cursor.execute("SELECT dye_id FROM users_dyes WHERE uuid = ? AND received = TRUE", (uuid,))
+            cursor.execute("SELECT dye_id FROM dyes")
             unlocked_dyes = cursor.fetchall()
 
         return [
