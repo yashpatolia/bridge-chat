@@ -30,9 +30,9 @@ class BoostDyes(commands.Cog):
         embed = discord.Embed(
             colour=discord.Colour.dark_green(),
             description=f"**Buffed Dye Odds**\n"
-                        f"<:{dye1}:{DYE_EMOJIS[dye1]}> **{dye1.replace('_', ' ').lower()}:** 3x More Common\n"
-                        f"<:{dye2}:{DYE_EMOJIS[dye2]}> **{dye2.replace('_', ' ').lower()}:** 2x More Common\n"
-                        f"<:{dye3}:{DYE_EMOJIS[dye3]}> **{dye3.replace('_', ' ').lower()}:** 2x More Common")
+                        f"<:{dye1}:{DYE_EMOJIS[dye1]}> **{dye1.replace('_', ' ').title()}:** 3x More Common\n"
+                        f"<:{dye2}:{DYE_EMOJIS[dye2]}> **{dye2.replace('_', ' ').title()}:** 2x More Common\n"
+                        f"<:{dye3}:{DYE_EMOJIS[dye3]}> **{dye3.replace('_', ' ').title()}:** 2x More Common")
         await interaction.edit_original_response(embed=embed)
 
     @boostdyes.autocomplete('dye1')
