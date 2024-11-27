@@ -1,6 +1,6 @@
 OPTIONS = {
     "host": "mc.hypixel.net",
-    "username": "TempsBot",
+    "username": "TempBridge",
     "auth": "microsoft",
     "version": "1.17"
 }
