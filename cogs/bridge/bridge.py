@@ -6,7 +6,7 @@ import emoji
 import sqlite3
 from discord.ext import commands
 from javascript import On
-from config import OPTIONS, BRIDGE_CHANNEL, BRIDGE_CHANNEL_ID, OFFICER_CHANNEL, OFFICER_CHANNEL_ID
+from config import OPTIONS, BRIDGE_CHANNEL, BRIDGE_CHANNEL_ID, OFFICER_CHANNEL, OFFICER_CHANNEL_ID, MESSAGE_FILTER
 from bridge_commands.bridge_commands import bridge_commands
 from game.roll_dye import roll_dye
 
@@ -35,6 +35,12 @@ class Bridge(commands.Cog):
                     guild_rank = match.group("guild_rank")
 
                     if username == OPTIONS['username']:
+                        return
+
+                    for word in MESSAGE_FILTER:
+                        if word in message.lower():
+                            self.client.bot.chat(f'/g mute {username} 5m')
+                            bridge_webhook.send(f"{message}", username=f"{username}", avatar_url=f"https://mc-heads.net/avatar/{username}")
                         return
 
                     if message.split(' ')[0][0] == ".":  # Bot Commands

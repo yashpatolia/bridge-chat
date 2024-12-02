@@ -104,3 +104,4 @@ DYE_EMOJIS = {
     "archfiend_dye": 1303804683730813100
 }
 
+MESSAGE_FILTER = ['skibidi', 'gyatt', 'rizzler', 'fanum']
