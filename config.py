@@ -5,7 +5,7 @@ OPTIONS = {
     "version": "1.17"
 }
 
-# Discord Bot Token & Guild Name (Cap Sensitive)
+# Bot Token & Guild Name (Cap Sensitive)
 TOKEN = ""
 GUILD_NAME = ""
 
