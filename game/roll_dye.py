@@ -12,7 +12,7 @@ def roll_dye(username, bot) -> None:
     bridge_webhook = discord.SyncWebhook.from_url(BRIDGE_CHANNEL)
     dye_webhook = discord.SyncWebhook.from_url(DYE_DROPS_CHANNEL)
 
-    with sqlite3.connect("temporals.db") as connection:
+    with sqlite3.connect("bridge.db") as connection:
         cursor = connection.cursor()
         connection.execute("PRAGMA foreign_keys = ON;")
         cursor.execute("SELECT dye_id, weight, rate FROM dyes")

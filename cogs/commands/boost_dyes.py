@@ -17,7 +17,7 @@ class BoostDyes(commands.Cog):
     async def boostdyes(self, interaction: discord.Interaction, dye1: str, dye2: str, dye3: str) -> None:
         await interaction.response.defer()
 
-        with sqlite3.connect("temporals.db") as connection:
+        with sqlite3.connect("bridge.db") as connection:
             cursor = connection.cursor()
             connection.execute("PRAGMA foreign_keys = ON;")
 
@@ -39,7 +39,7 @@ class BoostDyes(commands.Cog):
     @boostdyes.autocomplete('dye2')
     @boostdyes.autocomplete('dye3')
     async def dyes_autocomplete(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
-        with sqlite3.connect("temporals.db") as connection:
+        with sqlite3.connect("bridge.db") as connection:
             cursor = connection.cursor()
             connection.execute("PRAGMA foreign_keys = ON;")
 

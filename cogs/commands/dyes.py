@@ -21,7 +21,7 @@ class Dyes(commands.Cog):
         selected_dye_role = interaction.guild.get_role(DYE_ROLES[dye])
         await interaction.user.add_roles(selected_dye_role)
 
-        with sqlite3.connect("temporals.db") as connection:
+        with sqlite3.connect("bridge.db") as connection:
             cursor = connection.cursor()
             connection.execute("PRAGMA foreign_keys = ON;")
 
@@ -36,7 +36,7 @@ class Dyes(commands.Cog):
 
     @dyes.autocomplete('dye')
     async def dyes_autocomplete(self, interaction: discord.Interaction, current: str) -> List[app_commands.Choice[str]]:
-        with sqlite3.connect("temporals.db") as connection:
+        with sqlite3.connect("bridge.db") as connection:
             cursor = connection.cursor()
             connection.execute("PRAGMA foreign_keys = ON;")
 

@@ -2,9 +2,8 @@ import requests
 import logging
 import sqlite3
 
-
 def get_uuid(username) -> str:
-    with sqlite3.connect("temporals.db") as connection:
+    with sqlite3.connect("bridge.db") as connection:
         cursor = connection.cursor()
         cursor.execute("SELECT uuid FROM users WHERE ign = ?", (username.lower(),))
         uuid = cursor.fetchone()

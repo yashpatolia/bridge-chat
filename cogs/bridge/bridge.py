@@ -6,7 +6,7 @@ import emoji
 import sqlite3
 from discord.ext import commands
 from javascript import On
-from config import OPTIONS, BRIDGE_CHANNEL, BRIDGE_CHANNEL_ID, OFFICER_CHANNEL, OFFICER_CHANNEL_ID, MESSAGE_FILTER
+from config import OPTIONS, BRIDGE_CHANNEL, BRIDGE_CHANNEL_ID, OFFICER_CHANNEL, OFFICER_CHANNEL_ID
 from bridge_commands.bridge_commands import bridge_commands
 from game.roll_dye import roll_dye
 
@@ -32,20 +32,13 @@ class Bridge(commands.Cog):
                     match = re.search(r"^(?:\[(?P<rank>.+?)\])?\s?(?P<player>.+?)\s?(?:\[(?P<guild_rank>.+?)\])?: (?P<message>.*)$", message)
                     message = re.sub('@', '', match.group('message'))
                     username = match.group("player")
-                    guild_rank = match.group("guild_rank")
 
                     if username == OPTIONS['username']:
                         return
 
-                    for word in MESSAGE_FILTER:
-                        if word in message.lower():
-                            self.client.bot.chat(f'/g mute {username} 5m')
-                            bridge_webhook.send(f"{message}", username=f"{username}", avatar_url=f"https://mc-heads.net/avatar/{username}")
-                        return
-
                     if message.split(' ')[0][0] == ".":  # Bot Commands
-                        bridge_commands(message, username, guild_rank, self.client.bot)
-                    else:  # Roll Dye
+                        bridge_commands(message, username, self.client.bot)
+                    else:
                         roll_dye(username, self.client.bot)
 
                     logging.info(f'[MC] {username}: {message}')
@@ -80,7 +73,7 @@ class Bridge(commands.Cog):
                 self.client.bot.chat(f'/oc {message.content}')
 
             try:  # Rolling dyes through bridge
-                with sqlite3.connect("temporals.db") as connection:
+                with sqlite3.connect("bridge.db") as connection:
                     cursor = connection.cursor()
                     connection.execute("PRAGMA foreign_keys = ON;")
 

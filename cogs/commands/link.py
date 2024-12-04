@@ -30,7 +30,7 @@ class Link(commands.Cog):
                 await interaction.edit_original_response(embed=embed)
                 return
 
-            with sqlite3.connect("temporals.db") as connection:
+            with sqlite3.connect("bridge.db") as connection:
                 cursor = connection.cursor()
                 connection.execute("PRAGMA foreign_keys = ON;")
 

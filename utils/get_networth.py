@@ -1,7 +1,6 @@
 import requests
 import logging
 
-
 def get_networth(username) -> str:
     networth_amount = 0
     data = requests.get(f"https://sky.shiiyu.moe/api/v2/profile/{username}").json()
